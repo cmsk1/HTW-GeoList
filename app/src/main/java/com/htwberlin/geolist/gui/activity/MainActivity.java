@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     private void askForPermissions() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Fehlende Berechtigungen");
-        builder.setMessage("GeoList benötigt erweiterte Berechtigungen, um zu korrekt funktionieren. Möchten Sie die Berechtigungen jetzt erteilen?");
+        builder.setMessage("GeoList benötigt erweiterte Berechtigungen, die manuell freigegeben werden müssen. Möchten Sie die Berechtigungen jetzt erteilen?");
 
         builder.setPositiveButton("Erteilen", (dialog, which) -> {
             Intent appSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));

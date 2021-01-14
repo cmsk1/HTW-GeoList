@@ -30,7 +30,7 @@ public class TasklistViewAdapter extends RecyclerView.Adapter<TasklistViewAdapte
         this.context = context;
         this.taskRepo = storage.getTaskRepo();
         this.activity = activity;
-        this.makeSnapshot();
+        this.updateTasklists();
     }
 
     @NotNull
@@ -60,7 +60,7 @@ public class TasklistViewAdapter extends RecyclerView.Adapter<TasklistViewAdapte
         return this.tasklists.length;
     }
 
-    private void makeSnapshot() {
+    public void updateTasklists() {
         this.tasklists = taskRepo.getAllLists().toArray(new TaskList[0]);
         this.notifyDataSetChanged();
     }

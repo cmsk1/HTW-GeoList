@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,9 +56,14 @@ public class ListFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.tasklists);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(new TasklistViewAdapter(context, storage, getActivity()));
+        TasklistViewAdapter adapter = new TasklistViewAdapter(context, storage, getActivity());
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.addItemDecoration(new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+
+        GeoListLogic.getNetInterface().getNetwork().setStateChangeListener(() -> {
+            new Handler(Looper.getMainLooper()).post(() -> adapter.updateTasklists());
+        });
 
         FloatingActionButton addTaskBtn = (FloatingActionButton) rootView.findViewById(R.id.addListBtn);
 

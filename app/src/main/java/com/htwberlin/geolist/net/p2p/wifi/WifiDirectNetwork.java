@@ -90,14 +90,16 @@ public class WifiDirectNetwork extends AbstractNetwork implements INetwork, ICon
 
     @Override
     public void onControllerChanged(ConnectionState state) {
-        if (!this.state.isFailure()) {
+        if (this.state.isFailure()) {
             this.state = state;
+            this.fireStateChange();
         }
     }
 
     @SuppressLint("MissingPermission")
     private void onChannelChanged(ConnectionState state) {
         this.state = state;
+        this.fireStateChange();
 
         if (!this.state.isActiveState()) {
             this.wifiManager.removeGroup(this.globalChannel, null);

@@ -7,10 +7,10 @@ import com.htwberlin.geolist.data.models.TaskList;
 import com.htwberlin.geolist.data.models.User;
 import com.htwberlin.geolist.data.sqlite.DatabaseHelper;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -61,6 +61,10 @@ public class TaskListRepositoryImpl implements TaskListRepository {
         for (Task task: taskList.getTasks()) {
             saveTask(task, taskList.getUuid());
         }
+
+        for (String userSign : taskList.getSharedUsers()) {
+            this.db.saveShare(taskList, userSign);
+        }
         this.db.updateList(taskList);
     }
 
@@ -90,10 +94,10 @@ public class TaskListRepositoryImpl implements TaskListRepository {
     @Override
     public ArrayList<TaskList> getAllLists() {
         ArrayList<TaskList> arrayList = this.db.getAllLists();
-        ArrayList<SharedUser> sharedUsers = this.db.getSharedUsers();
+        ArrayList<SharedUser> allSharedUsers = this.db.getSharedUsers();
 
         for (TaskList list: arrayList) {
-            sharedUsers = sharedUsers.stream().filter(i -> i.getListId() == list.getId()).collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<SharedUser> sharedUsers = allSharedUsers.stream().filter(i -> i.getListId() == list.getId()).collect(Collectors.toCollection(ArrayList::new));
 
             for (SharedUser shared : sharedUsers) {
                 list.getSharedUsers().add(shared.getSignature());
@@ -105,10 +109,10 @@ public class TaskListRepositoryImpl implements TaskListRepository {
     @Override
     public ArrayList<TaskList> getAllListsWithDeleted() {
         ArrayList<TaskList> arrayList = this.db.getAllListsWithDeleted();
-        ArrayList<SharedUser> sharedUsers = this.db.getSharedUsers();
+        ArrayList<SharedUser> allSharedUsers = this.db.getSharedUsers();
 
         for (TaskList list: arrayList) {
-            sharedUsers = sharedUsers.stream().filter(i -> i.getListId() == list.getId()).collect(Collectors.toCollection(ArrayList::new));
+            ArrayList<SharedUser> sharedUsers = allSharedUsers.stream().filter(i -> i.getListId() == list.getId()).collect(Collectors.toCollection(ArrayList::new));
 
             for (SharedUser shared : sharedUsers) {
                 list.getSharedUsers().add(shared.getSignature());
@@ -259,8 +263,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
             throw new IllegalArgumentException();
 
         TaskList list = this.db.getListByUUID(listId);
-        User user = this.db.getUser(signature);
-        this.db.saveShare(list, user);
+        this.db.saveShare(list, signature);
     }
 
     @Override
@@ -269,8 +272,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
             throw new IllegalArgumentException();
 
         TaskList list = this.db.getListByUUID(listId);
-        User user = this.db.getUser(signature);
-        this.db.removeShare(list, user);
+        this.db.removeShare(list, signature);
     }
 
     @Override

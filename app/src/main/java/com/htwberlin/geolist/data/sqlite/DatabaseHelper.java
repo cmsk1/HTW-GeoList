@@ -780,23 +780,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // ############### SHARED ################
     // #######################################
 
-    public long saveShare(TaskList list, User user) {
+    public long saveShare(TaskList list, String userSign) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_UUID, user.getSignature());
+        values.put(KEY_UUID, userSign);
         values.put(KEY_SHARED_LIST_ID, list.getId());
-        values.put(KEY_SHARED_USER_ID, user.getId());
         values.put(KEY_CREATED_AT, getDateTime());
 
         // insert row
         return db.insert(TABLE_SHARED_LISTS, null, values);
     }
 
-    public void removeShare(TaskList list, User user) {
+    public void removeShare(TaskList list, String userSgn) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_SHARED_LISTS, KEY_SHARED_LIST_ID + " = ? AND " + KEY_SHARED_USER_ID + " = ?",
-                new String[]{String.valueOf(list.getId()), String.valueOf(user.getId())});
+        db.delete(TABLE_SHARED_LISTS, KEY_SHARED_LIST_ID + " = ? AND " + KEY_UUID + " = ?",
+                new String[]{String.valueOf(list.getId()), userSgn});
     }
 
     public ArrayList<SharedUser> getSharedUsers() {
@@ -811,7 +810,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 SharedUser item = new SharedUser(c.getString(c.getColumnIndex(KEY_UUID)));
                 item.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 item.setListId(c.getLong(c.getColumnIndex(KEY_SHARED_LIST_ID)));
-                item.setUserId(c.getLong(c.getColumnIndex(KEY_SHARED_USER_ID)));
                 items.add(item);
             } while (c.moveToNext());
         }
@@ -831,7 +829,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 SharedUser item = new SharedUser(c.getString(c.getColumnIndex(KEY_UUID)));
                 item.setId(c.getInt(c.getColumnIndex(KEY_ID)));
                 item.setListId(c.getLong(c.getColumnIndex(KEY_SHARED_LIST_ID)));
-                item.setUserId(c.getLong(c.getColumnIndex(KEY_SHARED_USER_ID)));
                 items.add(item);
             } while (c.moveToNext());
         }

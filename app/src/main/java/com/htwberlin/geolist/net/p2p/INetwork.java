@@ -14,4 +14,5 @@ public interface INetwork {
 
     void setNetworkListener(INetworkListener listener);
     void setPeersListener(IPeersListener listener);
+    void setStateChangeListener(Runnable listener);
 }

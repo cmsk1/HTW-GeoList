@@ -3,7 +3,6 @@ package com.htwberlin.geolist.data.models;
 public class SharedUser {
     private long id;
     private String signature;
-    private long userId;
     private long listId;
 
     public SharedUser(String signature) {
@@ -20,14 +19,6 @@ public class SharedUser {
 
     public String getSignature() {
         return signature;
-    }
-
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
     }
 
     public long getListId() {
@@ -50,5 +41,14 @@ public class SharedUser {
     @Override
     public int hashCode() {
         return this.signature.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "SharedUser{" +
+                "id=" + id +
+                ", signature='" + signature + '\'' +
+                ", listId=" + listId +
+                '}';
     }
 }

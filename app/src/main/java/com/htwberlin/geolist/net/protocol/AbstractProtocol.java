@@ -1,5 +1,6 @@
 package com.htwberlin.geolist.net.protocol;
 
+import com.htwberlin.geolist.Utils;
 import com.htwberlin.geolist.net.p2p.IChannel;
 import com.htwberlin.geolist.net.p2p.Device;
 import com.htwberlin.geolist.net.packet.PacketInputStream;
@@ -22,6 +23,8 @@ public abstract class AbstractProtocol implements IProtocol {
         do {
             this.state = this.state.transition();
         } while (this.state != null);
+
+        Utils.sleepSafe(2000);
     }
 
     protected void send(PacketOutputStream packet) throws IOException {

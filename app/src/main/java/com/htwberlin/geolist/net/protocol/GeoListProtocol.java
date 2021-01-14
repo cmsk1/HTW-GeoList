@@ -12,6 +12,7 @@ import com.htwberlin.geolist.net.packet.PacketType;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.UUID;
 
 public class GeoListProtocol extends AbstractProtocol implements IProtocol {
@@ -212,8 +213,8 @@ public class GeoListProtocol extends AbstractProtocol implements IProtocol {
 
     private void addSharedList(UUID tasklistId) {
         TaskList tasklist = new TaskList(tasklistId);
-        tasklist.setDisplayName("");
         tasklist.setOwned(false);
+        tasklist.setChangesAt(new Date(0)); //TODO: Remove dirty fix
         this.taskRepo.saveList(tasklist);
     }
 }
