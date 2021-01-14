@@ -55,6 +55,8 @@ public class TaskViewAdapter extends RecyclerView.Adapter<TaskViewAdapter.TaskVi
             Task task = this.tasks[position];
             holder.text.setText(task.getDescription());
             holder.checkBox.setChecked(task.isCompleted());
+            holder.checkBox.setContentDescription("checkBox_" + position);
+            holder.btnEdit.setContentDescription("editTask_" + position);
             holder.checkBox.setOnClickListener(v -> {
                 task.setCompleted(holder.checkBox.isChecked());
                 taskRepo.saveTask(task);
