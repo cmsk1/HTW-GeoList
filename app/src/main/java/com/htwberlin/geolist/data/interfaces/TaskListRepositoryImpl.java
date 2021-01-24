@@ -58,7 +58,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
             taskList.setId(oldList.getId());
         }
 
-        for (Task task: taskList.getTasks()) {
+        for (Task task : taskList.getTasks()) {
             saveTask(task, taskList.getUuid());
         }
 
@@ -73,10 +73,14 @@ public class TaskListRepositoryImpl implements TaskListRepository {
     public void deleteList(UUID listUuid) {
         if (listUuid == null)
             throw new IllegalArgumentException();
-        TaskList taskList  = this.getList(listUuid);
+        TaskList taskList = this.getList(listUuid);
 
-        if (taskList != null && taskList.getId() > 0)
+        if (taskList != null && taskList.getId() > 0) {
             this.db.deleteList(this.getList(listUuid).getId());
+            if (taskList.getRememberByLocation() != null) {
+                this.db.deleteLocation(taskList.getRememberByLocation().getId());
+            }
+        }
     }
 
     @Override
@@ -96,7 +100,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
         ArrayList<TaskList> arrayList = this.db.getAllLists();
         ArrayList<SharedUser> allSharedUsers = this.db.getSharedUsers();
 
-        for (TaskList list: arrayList) {
+        for (TaskList list : arrayList) {
             ArrayList<SharedUser> sharedUsers = allSharedUsers.stream().filter(i -> i.getListId() == list.getId()).collect(Collectors.toCollection(ArrayList::new));
 
             for (SharedUser shared : sharedUsers) {
@@ -111,7 +115,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
         ArrayList<TaskList> arrayList = this.db.getAllListsWithDeleted();
         ArrayList<SharedUser> allSharedUsers = this.db.getSharedUsers();
 
-        for (TaskList list: arrayList) {
+        for (TaskList list : arrayList) {
             ArrayList<SharedUser> sharedUsers = allSharedUsers.stream().filter(i -> i.getListId() == list.getId()).collect(Collectors.toCollection(ArrayList::new));
 
             for (SharedUser shared : sharedUsers) {
@@ -161,7 +165,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
         TaskList list = this.db.getListByUUID(listID);
         Task oldTask = this.db.getTaskByUUID(task.getUuid());
 
-        if (oldTask == null){
+        if (oldTask == null) {
             long taskId = this.db.createTask(task, list.getId());
             task.setId(taskId);
         } else {
@@ -195,7 +199,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
 
         TaskList list = this.db.getListByUUID(listUuid);
         long listID = -100;
-        if (list != null){
+        if (list != null) {
             listID = this.db.getListByUUID(listUuid).getId();
         }
         return this.db.getAllTasksFromList(listID);
@@ -208,7 +212,7 @@ public class TaskListRepositoryImpl implements TaskListRepository {
 
         TaskList list = this.db.getListByUUID(listUuid);
         long listID = -100;
-        if (list != null){
+        if (list != null) {
             listID = this.db.getListByUUID(listUuid).getId();
         }
         return this.db.getAllTasksFromListWithDeleted(listID);

@@ -31,7 +31,7 @@ public class LocationRepositoryImpl implements LocationRepository {
         } else {
             markerLocation.setId(oldLocation.getId());
             markerLocation.setCreatedAt(oldLocation.getCreatedAt());
-            markerLocation.setLastNotification(oldLocation.getLastNotification());
+            markerLocation.setLastNotification(markerLocation.getLastNotification());
         }
         this.db.updateLocation(markerLocation);
     }

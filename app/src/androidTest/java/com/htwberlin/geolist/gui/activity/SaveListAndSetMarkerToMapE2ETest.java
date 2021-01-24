@@ -42,8 +42,6 @@ import static org.junit.Assert.assertEquals;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-// WARNING: Espresso Test Recorder was paused during recording.
-// The generated test may be missing actions which might lead to unexpected behavior.
 public class SaveListAndSetMarkerToMapE2ETest {
 
     @Rule
