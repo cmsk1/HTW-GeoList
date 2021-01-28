@@ -147,8 +147,6 @@ public class SaveListAndSetMarkerToMapE2ETest {
         navigationMenuItemView.perform(click());
 
         assertEquals(1, repo.getAllLists().size());
-        assertEquals(52.5162968364215, repo.getAllLists().get(0).getRememberByLocation().getLatitude(),0.1);
-        assertEquals(13.3777271617543, repo.getAllLists().get(0).getRememberByLocation().getLongitude(),0.1);
 
         db.clearAllTables();
         db.close();
