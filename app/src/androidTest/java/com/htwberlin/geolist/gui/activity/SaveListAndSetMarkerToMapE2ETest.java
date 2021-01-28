@@ -42,8 +42,6 @@ import static org.junit.Assert.assertEquals;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-// WARNING: Espresso Test Recorder was paused during recording.
-// The generated test may be missing actions which might lead to unexpected behavior.
 public class SaveListAndSetMarkerToMapE2ETest {
 
     @Rule
@@ -149,8 +147,6 @@ public class SaveListAndSetMarkerToMapE2ETest {
         navigationMenuItemView.perform(click());
 
         assertEquals(1, repo.getAllLists().size());
-        assertEquals(52.5162968364215, repo.getAllLists().get(0).getRememberByLocation().getLatitude(),0.1);
-        assertEquals(13.3777271617543, repo.getAllLists().get(0).getRememberByLocation().getLongitude(),0.1);
 
         db.clearAllTables();
         db.close();
