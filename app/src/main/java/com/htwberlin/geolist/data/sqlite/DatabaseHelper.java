@@ -294,6 +294,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     item.setRememberByDate(getDateFromString(c.getString(c.getColumnIndex(KEY_LIST_REMEMBER_DATE))));
                 }
                 item.setCreatedAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+                item.setChangesAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CHANGED_AT))));
                 if (!item.isDeleted())
                     items.add(item);
             } while (c.moveToNext());
@@ -328,6 +329,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     item.setRememberByDate(getDateFromString(c.getString(c.getColumnIndex(KEY_LIST_REMEMBER_DATE))));
                 }
                 item.setCreatedAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+                item.setChangesAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CHANGED_AT))));
                 items.add(item);
             } while (c.moveToNext());
         }
@@ -340,7 +342,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_LIST_DISPLAY_NAME, item.getDisplayName());
-        values.put(KEY_CHANGED_AT, getDateTime());
+
+        if (item.getChangesAt() == null) {
+            values.put(KEY_CHANGED_AT, getDateTimeStringFromDate(new Date(0)));
+        } else {
+            values.put(KEY_CHANGED_AT, getDateTime());
+        }
         values.put(KEY_LIST_OWNED, item.isOwned());
         values.put(KEY_LIST_DELETED, item.isDeleted());
 
@@ -615,6 +622,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             item.setCompletedDate(getDateFromString((c.getString(c.getColumnIndex(KEY_TASK_COMPLETED_DATE)))));
             item.setDescription((c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION))));
             item.setDeleted(c.getInt(c.getColumnIndex(KEY_TASK_DELETED)) > 0);
+            item.setChangeAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CHANGED_AT))));
             item.setCreatedAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
         }
         c.close();
@@ -638,6 +646,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             item.setDescription((c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION))));
             item.setDeleted(c.getInt(c.getColumnIndex(KEY_TASK_DELETED)) > 0);
             item.setCreatedAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+            item.setChangeAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CHANGED_AT))));
         }
         c.close();
         return item;
@@ -660,6 +669,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 item.setDescription((c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION))));
                 item.setDeleted(c.getInt(c.getColumnIndex(KEY_TASK_DELETED)) > 0);
                 item.setCreatedAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+                item.setChangeAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CHANGED_AT))));
                 if (!item.isDeleted())
                     items.add(item);
             } while (c.moveToNext());
@@ -684,6 +694,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 item.setCompletedDate(getDateFromString((c.getString(c.getColumnIndex(KEY_TASK_COMPLETED_DATE)))));
                 item.setDescription((c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION))));
                 item.setCreatedAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+                item.setChangeAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CHANGED_AT))));
                 item.setDeleted(c.getInt(c.getColumnIndex(KEY_TASK_DELETED)) > 0);
                 if (!item.isDeleted())
                     items.add(item);
@@ -709,6 +720,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 item.setCompletedDate(getDateFromString((c.getString(c.getColumnIndex(KEY_TASK_COMPLETED_DATE)))));
                 item.setDescription((c.getString(c.getColumnIndex(KEY_TASK_DESCRIPTION))));
                 item.setCreatedAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CREATED_AT))));
+                item.setChangeAt(getDateFromString(c.getString(c.getColumnIndex(KEY_CHANGED_AT))));
                 item.setDeleted(c.getInt(c.getColumnIndex(KEY_TASK_DELETED)) > 0);
                 items.add(item);
             } while (c.moveToNext());

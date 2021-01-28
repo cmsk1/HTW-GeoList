@@ -30,4 +30,9 @@ public class Device {
     public int hashCode() {
         return this.signature.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return "Device{" + this.displayName + "@" + this.signature + "}";
+    }
 }

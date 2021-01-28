@@ -3,6 +3,7 @@ package com.htwberlin.geolist.net.protocol;
 import com.htwberlin.geolist.data.interfaces.DataStorage;
 import com.htwberlin.geolist.data.interfaces.TaskListRepository;
 import com.htwberlin.geolist.data.interfaces.UserRepository;
+import com.htwberlin.geolist.data.models.SharedUser;
 import com.htwberlin.geolist.data.models.TaskList;
 import com.htwberlin.geolist.logic.GeoListLogic;
 import com.htwberlin.geolist.logic.TaskListMerger;
@@ -11,6 +12,7 @@ import com.htwberlin.geolist.net.packet.PacketOutputStream;
 import com.htwberlin.geolist.net.packet.PacketType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.UUID;
@@ -116,15 +118,20 @@ public class GeoListProtocol extends AbstractProtocol implements IProtocol {
     }
 
     private IProtocolState masterSync() throws IOException {
+        System.out.println("Master - Original: " + this.activeTasklist);
         PacketInputStream fromSlave = this.receive(PacketType.CMP);
         TaskList otherList = fromSlave.readSerializable();
+        System.out.println("Master - from Slave: " + otherList);
         TaskListMerger merger = new TaskListMerger(this.activeTasklist, otherList);
         TaskList merged = merger.merge();
 
         PacketOutputStream toSlave = new PacketOutputStream(PacketType.MDF);
         toSlave.writeSerializable(merged);
         this.send(toSlave);
-        this.overrideTasklist(merged, this.activeTasklist);
+        merged.setOwned(this.activeTasklist.isOwned());
+        merged.setSharedUsers(this.activeTasklist.getSharedUsers());
+        System.out.println("Master - Merged: " + merged);
+        this.taskRepo.saveList(merged);
         return this::masterRevExchange;
     }
 
@@ -195,26 +202,26 @@ public class GeoListProtocol extends AbstractProtocol implements IProtocol {
     }
 
     private IProtocolState slaveGet() throws IOException {
+        System.out.println("Slave - Original: " + this.activeTasklist);
         PacketOutputStream toMaster = new PacketOutputStream(PacketType.CMP);
+        Collection<String> sharedUsers = this.activeTasklist.getSharedUsers();
+        this.activeTasklist.setSharedUsers(new ArrayList<>());
         toMaster.writeSerializable(this.activeTasklist);
         this.send(toMaster);
 
         PacketInputStream fromMaster = this.receive(PacketType.MDF);
         TaskList merged = fromMaster.readSerializable();
-        this.overrideTasklist(merged, this.activeTasklist);
-        return this::slaveAwaitRev;
-    }
-
-    private void overrideTasklist(TaskList merged, TaskList original) {
-        merged.setOwned(original.isOwned());
-        merged.setSharedUsers(original.getSharedUsers());
+        merged.setOwned(this.activeTasklist.isOwned());
+        merged.setSharedUsers(sharedUsers);
+        System.out.println("Slave - Merged: " + merged);
         this.taskRepo.saveList(merged);
+        return this::slaveAwaitRev;
     }
 
     private void addSharedList(UUID tasklistId) {
         TaskList tasklist = new TaskList(tasklistId);
         tasklist.setOwned(false);
-        tasklist.setChangesAt(new Date(0)); //TODO: Remove dirty fix
+        tasklist.setChangesAt(null);
         this.taskRepo.saveList(tasklist);
     }
 }

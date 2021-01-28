@@ -45,6 +45,12 @@ public class NullTaskListRepository implements TaskListRepository {
             long id = this.tasklistCounter++;
             list.setId(id);
         }
+
+        if (list.getChangesAt() == null) {
+            list.setChangesAt(new Date(0));
+        } else {
+            list.setChangesAt(new Date());
+        }
         this.tasklists.put(list.getId(), list);
     }
 
@@ -96,6 +102,7 @@ public class NullTaskListRepository implements TaskListRepository {
             long id = this.taskCounter++;
             task.setId(id);
         }
+        task.setChangeAt(new Date());
         task.setTaskListId(list.getId());
         this.tasks.put(task.getId(), task);
     }
@@ -108,6 +115,8 @@ public class NullTaskListRepository implements TaskListRepository {
         if (oldTask != null) {
             tasklist.getTasks().remove(oldTask);
         }
+        task.setChangeAt(new Date());
+        tasklist.setChangesAt(new Date());
         tasklist.getTasks().remove(task);
         tasklist.getTasks().add(task);
         this.tasks.put(task.getId(), task);
